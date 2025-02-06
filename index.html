@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Rubric Scoring</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #2C7B95;
+            color: #FFFFFF;
+        }
+        .container {
+            max-width: 95vw;
+            background-color: #FFFFFF;
+            color: #000000;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 10px;
+            text-align: left;
+            cursor: pointer;
+            
+        }
+        th {
+            
+            padding: 10px;
+            white-space: nowrap;
+            background-color: #D50F16;
+            color: #FFFFFF;
+        }
+        .selected {
+            background-color: #2C7B95 !important;
+            color: #FFFFFF !important;
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Rubric Table on the Left -->
+            <div class="col-md-10">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <input type="text" id="studentName" class="form-control w-50" placeholder="Enter student name">
+                    <button class="btn btn-danger" onclick="calculateScore()">Add Student</button>
+                    <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
+                </div>
+                
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>CATEGORY</th>
+                            <th>Excede as expectativas (25)</th>
+                            <th>Atende as expectativas (20)</th>
+                            <th>Progredindo (15)</th>
+                            <th>Progresso limitado (10)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Conceito</td>
+                            <td data-points="25">Demonstra conhecimento profundo dos fundamentos teóricos, regras e estratégias da
+                                prática esportiva.
+                            </td>
+                            <td data-points="20">Apresenta boa compreensão dos fundamentos teóricos, regras e estratégias da prática esportiva.
+                            </td>
+                            <td data-points="15">Mostra compreensão parcial ou limitada dos conceitos, com algumas lacunas.</td>
+                            <td data-points="10">Não demonstra compreensão dos fundamentos teóricos, regras ou estratégias.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Atitude</td>
+                            <td data-points="25">Mostra comportamento exemplar, respeitando colegas e professores; colabora ativamente e resolve conflitos.
+                            </td>
+                            <td data-points="20">Demonstra boa interação social, respeitando colegas e professores, e participa ativamente.
+                            </td>
+                            <td data-points="15">Apresenta algumas dificuldades em manter respeito ou interação, com pouca colaboração.
+                            </td>
+                            <td data-points="10">Mostra atitudes inadequadas, falta de respeito ou desinteresse na aula.</td>
+                        </tr>
+                        <tr>
+                            <td>Procedimento</td>
+                            <td data-points="25">Executa as habilidades e movimentos com alta precisão, criatividade e estratégia.
+                            </td>
+                            <td data-points="20">Realiza as habilidades e movimentos com boa precisão, estratégia adequada à prática proposta</td>
+                            <td data-points="15">Apresenta dificuldades na execução das habilidades e movimentos, necessitando de apoio.
+                            </td>
+                            <td data-points="10">Não executa os movimentos ou não se engaja nos procedimentos práticos propostos.
+            
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Prontidão</td>
+                            <td data-points="25">Sempre está preparado com uniforme, equipamentos e alta disposição para participar da aula.
+                            </td>
+                            <td data-points="20">Quase sempre está preparado, mas ocasionalmente esquece uniforme ou equipamentos.</td>
+                            <td data-points="15">Frequentemente chega sem o uniforme adequado ou sem disposição para participar.
+                            </td>
+                            <td data-points="10">Não apresenta prontidão, frequentemente ausente ou sem condições de participar.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Student Scores on the Right -->
+            <div class="col-md-2">
+                <h4>Student Scores</h4>
+                <div id="result" class="mt-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let studentScores = [];
+
+        document.querySelectorAll("td[data-points]").forEach(td => {
+            td.addEventListener("click", function() {
+                let row = this.parentElement;
+                row.querySelectorAll("td").forEach(cell => cell.classList.remove("selected"));
+                this.classList.add("selected");
+            });
+        });
+
+        function calculateScore() {
+            let studentName = document.getElementById("studentName").value.trim();
+            if (!studentName) {
+                alert("Please enter the student's name.");
+                return;
+            }
+            
+            let totalScore = 0;
+            document.querySelectorAll("tr").forEach(row => {
+                let selectedCell = row.querySelector("td.selected");
+                if (selectedCell) {
+                    totalScore += parseInt(selectedCell.getAttribute("data-points"));
+                }
+            });
+            
+            studentScores.push({ name: studentName, score: totalScore });
+            
+            let resultElement = document.getElementById("result");
+            let newResult = document.createElement("p");
+            newResult.classList.add("fw-bold");
+            newResult.innerText = `${studentName}: ${totalScore}`;
+            resultElement.appendChild(newResult);
+            
+            document.getElementById("studentName").value = "";
+            document.querySelectorAll("td.selected").forEach(td => td.classList.remove("selected"));
+        }
+
+        function exportCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,Name,Score\n" + 
+                studentScores.map(e => `${e.name},${e.score}`).join("\n");
+            
+            let encodedUri = encodeURI(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "student_scores.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
