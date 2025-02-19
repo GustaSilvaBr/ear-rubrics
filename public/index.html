@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -32,15 +32,9 @@
             padding: 10px;
             text-align: left;
             cursor: pointer;
-            font-size: 14px;
-        }
-
-        button.btn {
-            font-size: 14px;
         }
 
         th {
-
             padding: 10px;
             white-space: nowrap;
             background-color: #D50F16;
@@ -50,15 +44,10 @@
         .selected {
             background-color: #2C7B95 !important;
             color: #FFFFFF !important;
-
         }
 
-        .header {
-            display: flex;
-        }
-
-        h5 {
-            text-align: left;
+        .nobr {
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -66,17 +55,13 @@
 <body>
     <div class="container mt-4">
         <div class="row">
-            <div class="col-md-10 d-flex justify-content-start gap-2 align-items-center mb-3">
-                <input type="text" id="studentName" class="form-control w-50" placeholder="Enter student name">
-                <button class="btn btn-danger" onclick="calculateScore()">Add Student</button>
-            </div>
-            <h5 class="col-md-2">
-                Student Scores
-            </h5>
-
-        </div>
-        <div class="row">
             <div class="col-md-10">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <input type="text" id="studentName" class="form-control w-50" placeholder="Enter student name">
+                    <button class="btn btn-danger" onclick="calculateScore()">Add Student</button>
+                    <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
+                </div>
+
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -91,62 +76,44 @@
                         <tr>
                             <td>Conceito</td>
                             <td data-points="25">Demonstra conhecimento profundo dos fundamentos teóricos, regras e
-                                estratégias da
-                                prática esportiva.
-                            </td>
+                                estratégias da prática esportiva.</td>
                             <td data-points="20">Apresenta boa compreensão dos fundamentos teóricos, regras e
-                                estratégias da prática esportiva.
-                            </td>
+                                estratégias da prática esportiva.</td>
                             <td data-points="15">Mostra compreensão parcial ou limitada dos conceitos, com algumas
                                 lacunas.</td>
                             <td data-points="10">Não demonstra compreensão dos fundamentos teóricos, regras ou
-                                estratégias.
-                            </td>
+                                estratégias.</td>
                         </tr>
                         <tr>
                             <td>Atitude</td>
                             <td data-points="25">Mostra comportamento exemplar, respeitando colegas e professores;
-                                colabora ativamente e resolve conflitos.
-                            </td>
-                            <td data-points="20">Demonstra boa interação social, respeitando colegas e professores,
-                                e
-                                participa ativamente.
-                            </td>
+                                colabora ativamente e resolve conflitos.</td>
+                            <td data-points="20">Demonstra boa interação social, respeitando colegas e professores, e
+                                participa ativamente.</td>
                             <td data-points="15">Apresenta algumas dificuldades em manter respeito ou interação, com
-                                pouca colaboração.
-                            </td>
-                            <td data-points="10">Mostra atitudes inadequadas, falta de respeito ou desinteresse na
-                                aula.
+                                pouca colaboração.</td>
+                            <td data-points="10">Mostra atitudes inadequadas, falta de respeito ou desinteresse na aula.
                             </td>
                         </tr>
                         <tr>
                             <td>Procedimento</td>
-                            <td data-points="25">Executa as habilidades e movimentos com alta precisão, criatividade
-                                e
-                                estratégia.
-                            </td>
+                            <td data-points="25">Executa as habilidades e movimentos com alta precisão, criatividade e
+                                estratégia.</td>
                             <td data-points="20">Realiza as habilidades e movimentos com boa precisão, estratégia
                                 adequada à prática proposta</td>
                             <td data-points="15">Apresenta dificuldades na execução das habilidades e movimentos,
-                                necessitando de apoio.
-                            </td>
-                            <td data-points="10">Não executa os movimentos ou não se engaja nos procedimentos
-                                práticos
-                                propostos.
-
-                            </td>
+                                necessitando de apoio.</td>
+                            <td data-points="10">Não executa os movimentos ou não se engaja nos procedimentos práticos
+                                propostos.</td>
                         </tr>
                         <tr>
                             <td>Prontidão</td>
-                            <td data-points="25">Sempre está preparado com uniforme, equipamentos e alta disposição
-                                para
-                                participar da aula.
-                            </td>
+                            <td data-points="25">Sempre está preparado com uniforme, equipamentos e alta disposição para
+                                participar da aula.</td>
                             <td data-points="20">Quase sempre está preparado, mas ocasionalmente esquece uniforme ou
                                 equipamentos.</td>
                             <td data-points="15">Frequentemente chega sem o uniforme adequado ou sem disposição para
-                                participar.
-                            </td>
+                                participar.</td>
                             <td data-points="10">Não apresenta prontidão, frequentemente ausente ou sem condições de
                                 participar.</td>
                         </tr>
@@ -154,11 +121,8 @@
                 </table>
             </div>
             <div class="col-md-2">
-                <div class="d-flex justify-content-between gap-2 align-items-center">
-                    <button class="btn btn-warning btn-sm" onclick="clearLocalStorage()">Clear</button>
-                    <button class="btn btn-primary btn-sm" onclick="clearLocalStorage()">Print</button>
-                </div>
-
+                <h4>Student Scores</h4>
+                <button class="btn btn-warning" onclick="clearAll()">Clear All</button>
                 <div id="result" class="mt-4"></div>
             </div>
         </div>
@@ -166,27 +130,29 @@
 
     <script>
         let studentScores = JSON.parse(localStorage.getItem("studentScores")) || [];
-
-        function clearLocalStorage() {
-            localStorage.removeItem("studentScores");  // Clear the studentScores from localStorage
-            studentScores = [];  // Clear the in-memory array
-            displayStudentScores();  // Update the displayed list
-            alert("Local storage cleared!");
+        function clearAll() {
+            localStorage.removeItem("studentScores");
+            studentScores = [];
+            document.getElementById("result").innerHTML = "";
         }
+
+        document.getElementById("studentName").addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevent form submission (if inside a form)
+                calculateScore();
+            }
+        });
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadStudentList();
+        });
 
         document.querySelectorAll("td[data-points]").forEach(td => {
             td.addEventListener("click", function () {
                 let row = this.parentElement;
-
                 row.querySelectorAll("td").forEach(cell => cell.classList.remove("selected"));
-                if (td.classList.contains("")) {
-                    td.classList.remove("selected");
-                } else {
-                    this.classList.add("selected");
-
-                }
-
-
+                this.classList.add("selected");
             });
         });
 
@@ -198,56 +164,61 @@
             }
 
             let totalScore = 0;
-            document.querySelectorAll("tr").forEach(row => {
+            let rubricCode = "";
+            document.querySelectorAll("tr").forEach((row, index) => {
                 let selectedCell = row.querySelector("td.selected");
                 if (selectedCell) {
                     totalScore += parseInt(selectedCell.getAttribute("data-points"));
+                    rubricCode += (selectedCell.cellIndex - 1);
                 }
             });
 
-            studentScores.push({ name: studentName, score: totalScore });
+            let rawData = `${rubricCode}|${totalScore}|${studentName}`;
+            let encodedData = btoa(unescape(encodeURIComponent(rawData))); // Base64 encode
 
-            // Save the updated studentScores to localStorage
-            localStorage.setItem("studentScores", JSON.stringify(studentScores));
+            let studentLink = `studentGrade.html?data=${encodedData}`;
 
-            let resultElement = document.getElementById("result");
-            let newResult = document.createElement("p");
-            newResult.classList.add("fw-bold");
-            newResult.innerText = `${studentName}: ${totalScore}`;
-            resultElement.appendChild(newResult);
+            let studentData = { name: studentName, score: totalScore, link: studentLink };
+            studentScores.push(studentData);
+            localStorage.setItem("studentScores", JSON.stringify(studentScores)); // Save to localStorage
 
+            addStudentToList(studentData);
             document.getElementById("studentName").value = "";
             document.querySelectorAll("td.selected").forEach(td => td.classList.remove("selected"));
-            displayStudentScores();
         }
 
-        function exportCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,Name,Score\n" +
-                studentScores.map(e => `${e.name},${e.score}`).join("\n");
-
-            let encodedUri = encodeURI(csvContent);
-            let link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "student_scores.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Display stored student scores when the page loads
-        function displayStudentScores() {
+        function addStudentToList(studentData) {
             let resultElement = document.getElementById("result");
-            resultElement.innerHTML = '';  // Clear current displayed results
-            studentScores.forEach(student => {
-                let newResult = document.createElement("p");
-                newResult.classList.add("fw-bold");
-                newResult.innerText = `${student.name}: ${student.score}`;
-                resultElement.appendChild(newResult);
-            });
+            let newResult = document.createElement("div");
+            newResult.classList.add("d-flex", "align-items-start", "mb-1", "flex-column");
+
+            newResult.innerHTML = `
+        <div class="fw-bold m-0 nobr">${studentData.name}</div>
+        <div class="d-flex align-items-center">
+            <div class="nobr">${studentData.score} pontos. &nbsp;</div>&nbsp;-&nbsp;
+            <a href="${studentData.link}" target="_blank">Report&nbsp;</a>
+            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('${studentData.link}')">&nbsp;📋</button>
+        </div>
+    `;
+            resultElement.appendChild(newResult);
         }
 
-        // Show student scores from localStorage when page loads
-        window.onload = displayStudentScores;
+        function loadStudentList() {
+            let resultElement = document.getElementById("result");
+            resultElement.innerHTML = ""; // Clear previous content
+            studentScores.forEach(addStudentToList);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(window.location.origin + "/" + text);
+            alert("Link copied!");
+        }
+
+        function clearAll() {
+            localStorage.removeItem("studentScores");
+            studentScores = [];
+            document.getElementById("result").innerHTML = "";
+        }
 
     </script>
 </body>
