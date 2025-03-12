@@ -1,0 +1,34 @@
+[
+    {
+        "rubrics": [
+            {
+                "name": "Data Analysis 1st Project",
+                "rubricTable": {
+                    "categories": {
+                        "Conceito": [
+                            {
+                                "level": "Excede as expectativas",
+                                "score": 25,
+                                "description": "Demonstra conhecimento profundo dos fundamentos teóricos, regras e estratégias da prática esportiva."
+                            }
+                        ],
+                        "Atitude": [
+                            {
+                                "level": "Excede as expectativas",
+                                "score": 25,
+                                "description": "Mostra comportamento exemplar, respeitando colegas e professores; colabora ativamente e resolve conflitos."
+                            }
+                        ]
+                    }
+                },
+                "students": {
+                    "name": "Gustavo",
+                    "gradeLevel": "9th",
+                    "rubricPositions": "01234",
+                    "rubricGrade": "100",
+                    "maxGrade": "125"
+                }
+            }
+        ]
+    }
+]

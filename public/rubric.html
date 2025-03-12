@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -31,6 +31,7 @@
             border: 1px solid #000000;
             padding: 10px;
             text-align: left;
+            cursor: pointer;
         }
 
         th {
@@ -44,17 +45,21 @@
             background-color: #2C7B95 !important;
             color: #FFFFFF !important;
         }
+
+        .nobr {
+            white-space: nowrap;
+        }
     </style>
 </head>
 
 <body>
     <div class="container mt-4">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-10">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <input disabled type="text" id="studentName" class="form-control w-50"
-                        placeholder="Enter student name">
-                    <h4 id="total-score">Total: </h4>
+                    <input type="text" id="studentName" class="form-control w-50" placeholder="Enter student name">
+                    <button class="btn btn-danger" onclick="calculateScore()">Add Student</button>
+                    <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
                 </div>
 
                 <table class="table table-bordered">
@@ -115,50 +120,106 @@
                     </tbody>
                 </table>
             </div>
+            <div class="col-md-2">
+                <h4>Student Scores</h4>
+                <button class="btn btn-warning" onclick="clearAll()">Clear All</button>
+                <div id="result" class="mt-4"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        function getQueryParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                name: params.get('n') || '',
-                rubric: params.get('q') || ''
-            };
+        let studentScores = JSON.parse(localStorage.getItem("studentScores")) || [];
+        function clearAll() {
+            localStorage.removeItem("studentScores");
+            studentScores = [];
+            document.getElementById("result").innerHTML = "";
         }
 
-        function setStudentData() {
-            try {
-                const urlParams = new URLSearchParams(window.location.search);
-                const encodedData = urlParams.get("data");
-
-                if (!encodedData) {
-                    alert("Invalid URL parameters.");
-                    return;
-                }
-
-                let decodedData = decodeURIComponent(escape(atob(encodedData))); // Decode Base64
-                let [rubric, totalScore, name] = decodedData.split("|");
-
-                if (!rubric || !totalScore || !name) {
-                    throw new Error("Invalid data format");
-                }
-                document.getElementById("studentName").value = name;
-                document.getElementById("total-score").innerHTML = "Total: " + totalScore;
-                const rows = document.querySelectorAll("tbody tr");
-                    rubric.split('').forEach((colIndex, rowIndex) => {
-                        if (rows[rowIndex]) {
-                            const selectedCell = rows[rowIndex].children[parseInt(colIndex) + 1];
-                            if (selectedCell) selectedCell.classList.add("selected");
-                        }
-                    });
-            } catch (error) {
-                alert("Tampering detected! This score is not valid.");
-                document.body.innerHTML = "<h2 style='color: red; text-align: center;'>Invalid Score Data</h2>";
+        document.getElementById("studentName").addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevent form submission (if inside a form)
+                calculateScore();
             }
+        });
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadStudentList();
+        });
+
+        document.querySelectorAll("td[data-points]").forEach(td => {
+            td.addEventListener("click", function () {
+                let row = this.parentElement;
+                row.querySelectorAll("td").forEach(cell => cell.classList.remove("selected"));
+                this.classList.add("selected");
+            });
+        });
+
+        function calculateScore() {
+            let studentName = document.getElementById("studentName").value.trim();
+            if (!studentName) {
+                alert("Please enter the student's name.");
+                return;
+            }
+
+            let totalScore = 0;
+            let rubricCode = "";
+            document.querySelectorAll("tr").forEach((row, index) => {
+                let selectedCell = row.querySelector("td.selected");
+                if (selectedCell) {
+                    totalScore += parseInt(selectedCell.getAttribute("data-points"));
+                    rubricCode += (selectedCell.cellIndex - 1);
+                }
+            });
+
+            let rawData = `${rubricCode}|${totalScore}|${studentName}`;
+            let encodedData = btoa(unescape(encodeURIComponent(rawData))); // Base64 encode
+
+            let studentLink = `studentGrade.html?data=${encodedData}`;
+
+            let studentData = { name: studentName, score: totalScore, link: studentLink };
+            studentScores.push(studentData);
+            localStorage.setItem("studentScores", JSON.stringify(studentScores)); // Save to localStorage
+
+            addStudentToList(studentData);
+            document.getElementById("studentName").value = "";
+            document.querySelectorAll("td.selected").forEach(td => td.classList.remove("selected"));
         }
 
-        document.addEventListener("DOMContentLoaded", setStudentData);
+        function addStudentToList(studentData) {
+            let resultElement = document.getElementById("result");
+            let newResult = document.createElement("div");
+            newResult.classList.add("d-flex", "align-items-start", "mb-1", "flex-column");
+
+            newResult.innerHTML = `
+        <div class="fw-bold m-0 nobr">${studentData.name}</div>
+        <div class="d-flex align-items-center">
+            <div class="nobr">${studentData.score} pontos. &nbsp;</div>&nbsp;-&nbsp;
+            <a href="${studentData.link}" target="_blank">Report&nbsp;</a>
+            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('${studentData.link}')">&nbsp;📋</button>
+        </div>
+    `;
+            resultElement.appendChild(newResult);
+        }
+
+        function loadStudentList() {
+            let resultElement = document.getElementById("result");
+            resultElement.innerHTML = ""; // Clear previous content
+            studentScores.forEach(addStudentToList);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(window.location.origin + "/" + text);
+            alert("Link copied!");
+        }
+
+        function clearAll() {
+            localStorage.removeItem("studentScores");
+            studentScores = [];
+            document.getElementById("result").innerHTML = "";
+        }
+
     </script>
 </body>
 
