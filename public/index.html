@@ -1,113 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ear Rubric - Home</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      display: flex;
-      height: 100vh;
-      background-color: #E5E5E5;
-    }
-
-    .sidebar {
-      width: 250px;
-      background: #2C7B95;
-      color: white;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sidebar h2 {
-      text-align: left;
-      margin-bottom: 10px;
-    }
-
-    .add-button {
-      width: 100%;
-      padding: 10px;
-      background: #D50F16;
-      border: none;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-bottom: 20px;
-    }
-
-    .add-button:hover {
-      background: #b30d13;
-    }
-
-    .content {
-      flex-grow: 1;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .rubric-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 15px;
-      text-align: left;
-      width: 100%;
-    }
-
-    .rubrics-container {
-      display: flex;
-      justify-content: start !important;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      width: 100%;
-    }
-
-    .card {
-      width: 250px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: transform 0.2s;
-      overflow: hidden;
-    }
-
-    .card:hover {
-      transform: scale(1.05);
-    }
-
-    .card img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-    }
-
-    .card-body {
-      padding: 15px;
-      text-align: left;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: auto;
-      font-size: 1rem;
-      color: white;
-    }
-  </style>
-  =======
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rubrica de Avaliação</title>
@@ -193,52 +87,14 @@
       white-space: normal !important;
     }
 
-    td.text-start {
+    td.text-start{
       white-space: nowrap !important;
       word-break: normal !important;
     }
   </style>
-  >>>>>>> new-view
 </head>
 
 <body>
-  <div class="sidebar">
-    <h2>Ear Rubric</h2>
-    <button class="add-button">+ Add Rubric</button>
-    <div class="footer">&#169; Made by Gustavo Silva</div>
-  </div>
-
-  <div class="content">
-    <div class="rubric-title">Rubrics Already Created</div>
-    <div class="rubrics-container" id="rubricList"></div>
-  </div>
-
-  <script>
-    const rubrics = [
-      { name: "Math Rubric", class: "7th Grade", teacher: "Mr. Smith", image: "https://via.placeholder.com/250" },
-      { name: "Science Rubric", class: "8th Grade", teacher: "Ms. Johnson", image: "https://via.placeholder.com/250" },
-      { name: "English Rubric", class: "9th Grade", teacher: "Mr. Lee", image: "https://via.placeholder.com/250" }
-    ];
-
-    const rubricList = document.getElementById("rubricList");
-    rubrics.forEach(rubric => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-                <img src="${rubric.image}" alt="Rubric Image">
-                <div class="card-body">
-                    <h5>${rubric.name}</h5>
-                    <p>Class: ${rubric.class}</p>
-                    <p>Teacher: ${rubric.teacher}</p>
-                </div>
-            `;
-      card.addEventListener("click", () => {
-        window.location.href = "index.html";
-      });
-      rubricList.appendChild(card);
-    });
-  </script>
-  =======
 
   <!-- Navbar -->
   <nav class="mb-3 navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm border-bottom">
@@ -654,7 +510,6 @@
 
       </script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 
 </html>
