@@ -2,225 +2,514 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Rubric Scoring</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #2C7B95;
-            color: #FFFFFF;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rubrica de Avaliação</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 15px;
+      margin: 0;
+    }
 
-        .container {
-            max-width: 95vw;
-            background-color: #FFFFFF;
-            color: #000000;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    .rubric-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 80px auto 20px;
+      padding: 20px 30px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    .rubric-header {
+      border-bottom: 1px solid #dee2e6;
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      margin-top: 60px !important;
+    }
 
-        th,
-        td {
-            border: 1px solid #000000;
-            padding: 10px;
-            text-align: left;
-            cursor: pointer;
-        }
+    .rubric-header h3 {
+      margin-bottom: 5px;
+      font-size: 1.25rem;
+    }
 
-        th {
-            padding: 10px;
-            white-space: nowrap;
-            background-color: #D50F16;
-            color: #FFFFFF;
-        }
+    .rubric-header small {
+      color: #666;
+    }
 
-        .selected {
-            background-color: #2C7B95 !important;
-            color: #FFFFFF !important;
-        }
+    .navbar {
+      padding: 0.4rem 1rem;
+    }
 
-        .nobr {
-            white-space: nowrap;
-        }
-    </style>
+    table th,
+    table td {
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    table th {
+      background-color: #f1f3f5;
+    }
+
+    .selected {
+      background-color: #4c6ef5 !important;
+      color: #fff !important;
+    }
+
+    #result {
+      font-size: 14px;
+    }
+
+    .student-item {
+      transition: background-color 0.2s ease;
+    }
+
+    .student-item:hover {
+      background-color: #e7f0ff;
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        max-width: 95%;
+      }
+    }
+
+    td {
+      white-space: normal !important;
+      word-break: break-word !important;
+      overflow-wrap: break-word !important;
+    }
+
+    td[contenteditable="true"][contenteditable="true"] {
+      white-space: normal !important;
+    }
+
+    td.text-start{
+      white-space: nowrap !important;
+      word-break: normal !important;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-10">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <input type="text" id="studentName" class="form-control w-50" placeholder="Enter student name">
-                    <button class="btn btn-danger" onclick="calculateScore()">Add Student</button>
-                    <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
-                </div>
 
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>CATEGORY</th>
-                            <th>Excede as expectativas (25)</th>
-                            <th>Atende as expectativas (20)</th>
-                            <th>Progredindo (15)</th>
-                            <th>Progresso limitado (10)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Conceito</td>
-                            <td data-points="25">Demonstra conhecimento profundo dos fundamentos teóricos, regras e
-                                estratégias da prática esportiva.</td>
-                            <td data-points="20">Apresenta boa compreensão dos fundamentos teóricos, regras e
-                                estratégias da prática esportiva.</td>
-                            <td data-points="15">Mostra compreensão parcial ou limitada dos conceitos, com algumas
-                                lacunas.</td>
-                            <td data-points="10">Não demonstra compreensão dos fundamentos teóricos, regras ou
-                                estratégias.</td>
-                        </tr>
-                        <tr>
-                            <td>Atitude</td>
-                            <td data-points="25">Mostra comportamento exemplar, respeitando colegas e professores;
-                                colabora ativamente e resolve conflitos.</td>
-                            <td data-points="20">Demonstra boa interação social, respeitando colegas e professores, e
-                                participa ativamente.</td>
-                            <td data-points="15">Apresenta algumas dificuldades em manter respeito ou interação, com
-                                pouca colaboração.</td>
-                            <td data-points="10">Mostra atitudes inadequadas, falta de respeito ou desinteresse na aula.
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Procedimento</td>
-                            <td data-points="25">Executa as habilidades e movimentos com alta precisão, criatividade e
-                                estratégia.</td>
-                            <td data-points="20">Realiza as habilidades e movimentos com boa precisão, estratégia
-                                adequada à prática proposta</td>
-                            <td data-points="15">Apresenta dificuldades na execução das habilidades e movimentos,
-                                necessitando de apoio.</td>
-                            <td data-points="10">Não executa os movimentos ou não se engaja nos procedimentos práticos
-                                propostos.</td>
-                        </tr>
-                        <tr>
-                            <td>Prontidão</td>
-                            <td data-points="25">Sempre está preparado com uniforme, equipamentos e alta disposição para
-                                participar da aula.</td>
-                            <td data-points="20">Quase sempre está preparado, mas ocasionalmente esquece uniforme ou
-                                equipamentos.</td>
-                            <td data-points="15">Frequentemente chega sem o uniforme adequado ou sem disposição para
-                                participar.</td>
-                            <td data-points="10">Não apresenta prontidão, frequentemente ausente ou sem condições de
-                                participar.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-2">
-                <h4>Student Scores</h4>
-                <button class="btn btn-warning" onclick="clearAll()">Clear All</button>
-                <div id="result" class="mt-4"></div>
-            </div>
-        </div>
+  <!-- Navbar -->
+  <nav class="mb-3 navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm border-bottom">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold text-primary" href="#">📊 Avaliação Escolar</a>
+      <div class="d-flex">
+        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editHeaderModal">Editar
+          Cabeçalho</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <!-- Rubric Header -->
+    <div class="rubric-header  mt-5 mb-3">
+      <h3 id="rubricTitleDisplay">Apresentação de Trabalho - História</h3>
+      <div><strong>Professor:</strong> <span id="teacherDisplay">Patrícia Almeida</span> &nbsp; | &nbsp;
+        <strong>Turma:</strong> <span id="classDisplay">8th Grade</span>
+      </div>
+
     </div>
 
-    <script>
+    <!-- Aluno -->
+
+    <div class="row" style="height: 600px;">
+      <div class="col-md-8" style="height: 100%; overflow-y: auto;">
+
+        <div class="mb-3 d-flex gap-2">
+          <button class="btn btn-sm btn-outline-secondary" onclick="enableEdit()">Editar Textos</button>
+          <button class="btn btn-success d-none" id="saveTextsBtn" onclick="saveTexts()">Salvar Textos</button>
+          <a id="shareBtn" class="btn btn-sm btn-primary d-none" target="_blank">🔗 Compartilhar</a>
+        </div>
+
+        <table class="table table-bordered align-middle text-center">
+          <thead>
+            <tr>
+              <th class="text-start">Categoria</th>
+              <th>Excede (25)</th>
+              <th>Atende (20)</th>
+              <th>Progredindo (15)</th>
+              <th>Limitado (10)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-start">Conceito</td>
+              <td data-points="25">Demonstra conhecimento profundo dos conceitos.</td>
+              <td data-points="20">Boa compreensão dos conceitos.</td>
+              <td data-points="15">Compreensão parcial com lacunas.</td>
+              <td data-points="10">Pouca ou nenhuma compreensão.</td>
+            </tr>
+            <tr>
+              <td class="text-start">Atitude</td>
+              <td data-points="25">Comportamento exemplar, respeito e colaboração.</td>
+              <td data-points="20">Boa interação e participação ativa.</td>
+              <td data-points="15">Algumas dificuldades de respeito ou interação.</td>
+              <td data-points="10">Atitudes inadequadas ou desinteresse.</td>
+            </tr>
+            <tr>
+              <td class="text-start">Procedimento</td>
+              <td data-points="25">Alta precisão, criatividade e estratégia.</td>
+              <td data-points="20">Boa execução com estratégia adequada.</td>
+              <td data-points="15">Dificuldades na execução, precisa de apoio.</td>
+              <td data-points="10">Não executa ou não participa.</td>
+            </tr>
+            <tr>
+              <td class="text-start">Prontidão</td>
+              <td data-points="25">Sempre preparado e disposto.</td>
+              <td data-points="20">Quase sempre preparado.</td>
+              <td data-points="15">Frequente despreparo ou falta de disposição.</td>
+              <td data-points="10">Ausente ou sem condições de participar.</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <div class="col-md-4" style="height: 100%; overflow-y: auto;">
+        <div class="d-flex align-items-center justify-content-center">
+          <h5 class="mb-3">
+            📋 Alunos
+          </h5>
+          <button class="btn btn-sm btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#addStudentModal">+ Novo
+            Aluno</button>
+
+        </div>
+        <div id="result" class="border p-3 bg-light rounded shadow-sm" style="max-height: 420px; overflow-y: auto;">
+        </div>
+      </div>
+
+      <!-- Modal para editar cabeçalho -->
+      <div class="modal fade" id="editHeaderModal" tabindex="-1" aria-labelledby="editHeaderModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Editar Cabeçalho</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <label class="form-label">Título</label>
+              <input type="text" id="rubricTitleInput" class="form-control mb-2"
+                value="Apresentação de Trabalho - História">
+              <label class="form-label">Professor</label>
+              <input type="text" id="teacherInput" class="form-control mb-2" value="Patrícia Almeida">
+              <label class="form-label">Turma</label>
+              <input type="text" id="classInput" class="form-control" value="8th Grade">
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" onclick="saveHeader()">Salvar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal para adicionar novo aluno -->
+      <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Adicionar Novo Aluno</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <label class="form-label">Nome do Aluno</label>
+              <input type="text" id="modalStudentName" class="form-control mb-3" placeholder="Digite o nome">
+
+              <label class="form-label">Série</label>
+              <select id="modalStudentGrade" class="form-select">
+                <option value="6th">6th Grade</option>
+                <option value="7th">7th Grade</option>
+                <option value="8th">8th Grade</option>
+                <option value="9th">9th Grade</option>
+                <option value="10th">10th Grade</option>
+                <option value="11th">11th Grade</option>
+                <option value="12th">12th Grade</option>
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" onclick="addStudentFromModal()">Adicionar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scripts -->
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          document.querySelectorAll("[contenteditable=true]").forEach(element => {
+            element.addEventListener("paste", function (e) {
+              e.preventDefault();
+              const text = e.clipboardData.getData("text/plain");
+              document.execCommand("insertText", false, text);
+            });
+          });
+        });
+
+
+        let rubricHeader = {
+          title: document.getElementById("rubricTitleDisplay")?.innerText || "Título da Rúbrica",
+          teacher: document.getElementById("teacherDisplay")?.innerText || "Professor",
+          classGroup: document.getElementById("classDisplay")?.innerText || "Turma"
+        };
+
+        let selectedStudentIndex = null;
+
+        let isEditing = false;
         let studentScores = JSON.parse(localStorage.getItem("studentScores")) || [];
+
         function clearAll() {
-            localStorage.removeItem("studentScores");
-            studentScores = [];
-            document.getElementById("result").innerHTML = "";
+          localStorage.removeItem("studentScores");
+          studentScores = [];
+          document.getElementById("result").innerHTML = "";
         }
 
-        document.getElementById("studentName").addEventListener("keypress", function (event) {
-            if (event.key === "Enter") {
-                event.preventDefault(); // Prevent form submission (if inside a form)
-                calculateScore();
-            }
-        });
+        function saveHeader() {
+          const title = document.getElementById("rubricTitleInput").value.trim();
+          const teacher = document.getElementById("teacherInput").value.trim();
+          const classGroup = document.getElementById("classInput").value.trim();
+
+          // Atualiza os elementos na tela
+          document.getElementById("rubricTitleDisplay").innerText = title;
+          document.getElementById("teacherDisplay").innerText = teacher;
+          document.getElementById("classDisplay").innerText = classGroup;
+
+          // Atualiza o objeto JS
+          rubricHeader.title = title;
+          rubricHeader.teacher = teacher;
+          rubricHeader.classGroup = classGroup;
+
+          // Fecha o modal
+          bootstrap.Modal.getInstance(document.getElementById("editHeaderModal")).hide();
+        }
 
 
-        document.addEventListener("DOMContentLoaded", () => {
-            loadStudentList();
-        });
+        function enableEdit() {
+          isEditing = true;
+          document.querySelectorAll("td, th").forEach(cell => cell.contentEditable = true);
+          document.getElementById("saveTextsBtn").classList.remove("d-none");
+        }
+
+        function saveTexts() {
+          isEditing = false;
+          document.querySelectorAll("td, th").forEach((cell, index) => {
+            cell.contentEditable = false;
+            localStorage.setItem("rubric-cell-" + index, cell.innerText);
+          });
+          document.getElementById("saveTextsBtn").classList.add("d-none");
+        }
 
         document.querySelectorAll("td[data-points]").forEach(td => {
-            td.addEventListener("click", function () {
-                let row = this.parentElement;
-                row.querySelectorAll("td").forEach(cell => cell.classList.remove("selected"));
-                this.classList.add("selected");
-            });
+          td.addEventListener("click", function () {
+            if (isEditing) return;
+
+            const row = this.parentElement;
+            const rowIndex = Array.from(row.parentElement.children).indexOf(row);
+            row.querySelectorAll("td").forEach(cell => cell.classList.remove("selected"));
+            this.classList.add("selected");
+
+            if (selectedStudentIndex !== null) {
+              const rubricRowIndex = this.cellIndex - 1;
+              let rubricCode = studentScores[selectedStudentIndex].rubricCode || "____";
+              rubricCode = rubricCode.split("");
+              rubricCode[rowIndex] = rubricRowIndex.toString();
+              studentScores[selectedStudentIndex].rubricCode = rubricCode.join("");
+
+              // Atualiza score
+              let total = 0;
+              document.querySelectorAll("tbody tr").forEach((row, i) => {
+                const code = parseInt(rubricCode[i]);
+                if (!isNaN(code)) {
+                  const td = row.querySelectorAll("td")[code + 1];
+                  total += parseInt(td.getAttribute("data-points")) || 0;
+                }
+              });
+              studentScores[selectedStudentIndex].score = total;
+
+              // Atualiza localStorage e recarrega lista
+              localStorage.setItem("studentScores", JSON.stringify(studentScores));
+              loadStudentList();
+              // Mantém o aluno selecionado
+              setTimeout(() => selectStudent(selectedStudentIndex), 10);
+            }
+          });
         });
 
+
         function calculateScore() {
-            let studentName = document.getElementById("studentName").value.trim();
-            if (!studentName) {
-                alert("Please enter the student's name.");
-                return;
+          const studentName = document.getElementById("studentName").value.trim();
+          if (!studentName) {
+            alert("Informe o nome do aluno.");
+            return;
+          }
+
+          let total = 0;
+          let rubricCode = "";
+          document.querySelectorAll("tbody tr").forEach(row => {
+            const selected = row.querySelector("td.selected");
+            if (selected) {
+              total += parseInt(selected.getAttribute("data-points"));
+              rubricCode += (selected.cellIndex - 1);
             }
+          });
 
-            let totalScore = 0;
-            let rubricCode = "";
-            document.querySelectorAll("tr").forEach((row, index) => {
-                let selectedCell = row.querySelector("td.selected");
-                if (selectedCell) {
-                    totalScore += parseInt(selectedCell.getAttribute("data-points"));
-                    rubricCode += (selectedCell.cellIndex - 1);
-                }
-            });
+          const encoded = btoa(unescape(encodeURIComponent(`${rubricCode}|${total}|${studentName}`)));
+          const link = `studentGrade.html?data=${encoded}`;
+          const entry = { name: studentName, score: total, link, rubricCode };
 
-            let rawData = `${rubricCode}|${totalScore}|${studentName}`;
-            let encodedData = btoa(unescape(encodeURIComponent(rawData))); // Base64 encode
+          studentScores.push(entry);
+          localStorage.setItem("studentScores", JSON.stringify(studentScores));
+          addStudentToList(entry, studentScores.length - 1);
 
-            let studentLink = `studentGrade.html?data=${encodedData}`;
-
-            let studentData = { name: studentName, score: totalScore, link: studentLink };
-            studentScores.push(studentData);
-            localStorage.setItem("studentScores", JSON.stringify(studentScores)); // Save to localStorage
-
-            addStudentToList(studentData);
-            document.getElementById("studentName").value = "";
-            document.querySelectorAll("td.selected").forEach(td => td.classList.remove("selected"));
+          document.getElementById("studentName").value = "";
+          document.querySelectorAll("td.selected").forEach(td => td.classList.remove("selected"));
         }
 
-        function addStudentToList(studentData) {
-            let resultElement = document.getElementById("result");
-            let newResult = document.createElement("div");
-            newResult.classList.add("d-flex", "align-items-start", "mb-1", "flex-column");
+        function addStudentToList({ name, score, link, rubricCode }, index) {
+          const el = document.getElementById("result");
+          const div = document.createElement("div");
+          div.classList.add("mb-2", "student-item", "p-2", "rounded", "d-flex", "justify-content-between", "align-items-center");
+          div.setAttribute("data-index", index);
+          div.style.cursor = "pointer";
+          div.addEventListener("click", () => { selectStudent(index) })
+          div.innerHTML = `
+    <div class="flex-grow-1 me-2">
+      <strong>${name}</strong> - ${score} pontos
+    </div>
+    <button class="btn btn-sm btn-danger" onclick="removeStudent(${index})">✖</button>
+  `;
 
-            newResult.innerHTML = `
-        <div class="fw-bold m-0 nobr">${studentData.name}</div>
-        <div class="d-flex align-items-center">
-            <div class="nobr">${studentData.score} pontos. &nbsp;</div>&nbsp;-&nbsp;
-            <a href="${studentData.link}" target="_blank">Report&nbsp;</a>
-            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyToClipboard('${studentData.link}')">&nbsp;📋</button>
-        </div>
-    `;
-            resultElement.appendChild(newResult);
+          el.appendChild(div);
         }
+
+
+
+        function removeStudent(index) {
+          if (!confirm("Deseja remover este aluno?")) return;
+
+          studentScores.splice(index, 1);
+          localStorage.setItem("studentScores", JSON.stringify(studentScores));
+          loadStudentList(); // recarrega com os índices atualizados
+        }
+
 
         function loadStudentList() {
-            let resultElement = document.getElementById("result");
-            resultElement.innerHTML = ""; // Clear previous content
-            studentScores.forEach(addStudentToList);
+          document.getElementById("result").innerHTML = "";
+          studentScores.forEach((entry, index) => addStudentToList(entry, index));
         }
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(window.location.origin + "/" + text);
-            alert("Link copied!");
+
+        function restoreTextEdits() {
+          document.querySelectorAll("tbody td, tbody th").forEach((cell, index) => {
+            cell.setAttribute("id", "rubric-cell-" + index);
+            const saved = localStorage.getItem("rubric-cell-" + index);
+            if (saved) cell.innerText = saved;
+          });
         }
 
-        function clearAll() {
-            localStorage.removeItem("studentScores");
-            studentScores = [];
-            document.getElementById("result").innerHTML = "";
+        document.addEventListener("DOMContentLoaded", () => {
+          loadStudentList();
+          //restoreTextEdits();
+        });
+        function addStudentFromModal() {
+          const name = document.getElementById("modalStudentName").value.trim();
+          const grade = document.getElementById("modalStudentGrade").value;
+
+          if (!name) {
+            alert("Digite o nome do aluno.");
+            return;
+          }
+
+          const entry = {
+            name: `${name} (${grade})`,
+            score: 0,
+            link: "#",
+            rubricCode: "____"
+          };
+
+
+          studentScores.push(entry);
+          localStorage.setItem("studentScores", JSON.stringify(studentScores));
+          addStudentToList(entry, studentScores.length - 1);
+
+          document.getElementById("modalStudentName").value = "";
+          document.getElementById("modalStudentGrade").value = "6th";
+
+          bootstrap.Modal.getInstance(document.getElementById("addStudentModal")).hide();
+        }
+        function selectStudent(index) {
+          selectedStudentIndex = index;
+
+          document.querySelectorAll(".student-item").forEach(item =>
+            item.classList.remove("bg-primary", "text-white")
+          );
+          const selectedItem = document.querySelector(`.student-item[data-index='${index}']`);
+          selectedItem.classList.add("bg-primary", "text-white");
+
+          document.querySelectorAll("tbody tr").forEach(row =>
+            row.querySelectorAll("td").forEach(td => td.classList.remove("selected"))
+          );
+
+          const aluno = studentScores[index];
+          const rubricCode = aluno.rubricCode || "____";
+
+          // Reaplica as seleções
+          const rows = document.querySelectorAll("tbody tr");
+          rubricCode.split("").forEach((code, i) => {
+            const col = parseInt(code);
+            if (!isNaN(col)) {
+              const td = rows[i]?.querySelectorAll("td")[col + 1];
+              if (td) td.classList.add("selected");
+            }
+          });
+
+          // Recalcular total
+          let total = 0;
+          rubricCode.split("").forEach((code, i) => {
+            const col = parseInt(code);
+            if (!isNaN(col)) {
+              const td = rows[i]?.querySelectorAll("td")[col + 1];
+              if (td) total += parseInt(td.getAttribute("data-points")) || 0;
+            }
+          });
+
+          // Capturar os textos da rubrica
+          const rubricTexts = [];
+          document.querySelectorAll("tbody tr").forEach(row => {
+            row.querySelectorAll("td").forEach(td => rubricTexts.push(td.innerText.trim()));
+          });
+
+          // Gerar dados completos
+          const allData = [
+            rubricCode,
+            total,
+            aluno.name,
+            rubricHeader.title,
+            rubricHeader.teacher,
+            rubricHeader.classGroup,
+            ...rubricTexts
+          ];
+
+          const encoded = btoa(unescape(encodeURIComponent(allData.join("|"))));
+          const reportLink = `studentGrade.html?data=${encoded}`;
+
+          aluno.score = total;
+          aluno.link = reportLink;
+
+          localStorage.setItem("studentScores", JSON.stringify(studentScores));
+
+          const shareBtn = document.getElementById("shareBtn");
+          shareBtn.href = reportLink;
+          shareBtn.classList.remove("d-none");
         }
 
-    </script>
+      </script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
